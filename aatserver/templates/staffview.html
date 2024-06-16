@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Assessment</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="number"],
+      select,
+      input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+      .options {
+        margin-bottom: 20px;
+      }
+      .option {
+        margin-bottom: 10px;
+      }
+      input[type="radio"] {
+        margin-right: 5px;
+      }
+      input[type="submit"],
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      input[type="submit"]:hover,
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add Assessment</h1>
+      <form method="post" enctype="multipart/form-data" id="assessment-form">
+        <label for="name">Assessment Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="difficulty">Difficulty Level:</label>
+        <select id="difficulty" name="difficulty" required>
+          <option value="L1">level 1</option>
+          <option value="L2">level 2</option>
+          <option value="L3">level 3</option>
+        </select>
+
+        <label for="total_questions">Total Questions:</label>
+        <input
+          type="number"
+          id="total_questions"
+          name="total_questions"
+          min="1"
+          required
+        />
+
+        <div class="questions-container">
+          <!-- Questions will be dynamically added here -->
+        </div>
+
+        <label for="total_marks">Total Marks:</label>
+        <input type="number" id="total_marks" name="total_marks" readonly />
+
+        <button type="button" id="next-btn">Next</button>
+        <input type="submit" value="Save" id="save-btn" style="display: none" />
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const totalQuestionsInput = document.getElementById("total_questions");
+        const totalMarksInput = document.getElementById("total_marks");
+        const questionsContainer = document.querySelector(
+          ".questions-container"
+        );
+        const nextBtn = document.getElementById("next-btn");
+        const saveBtn = document.getElementById("save-btn");
+        let questionCount = 0;
+
+        nextBtn.addEventListener("click", function () {
+          const currentQuestionCount =
+            document.querySelectorAll(".question").length;
+          if (currentQuestionCount < totalQuestionsInput.value) {
+            addQuestionField();
+            if (currentQuestionCount + 1 == totalQuestionsInput.value) {
+              nextBtn.style.display = "none";
+              saveBtn.style.display = "block";
+            }
+          }
+        });
+
+        function addQuestionField() {
+          const questionField = document.createElement("div");
+          questionField.classList.add("question");
+          questionField.innerHTML = `
+                    <hr>
+                    <label>Question Image:</label>
+                    <input type="file" name="question_image-${questionCount}" required accept="image/*">
+                    <label for="question_types-${questionCount}">Question Type:</label>
+                    <select name="question_types[${questionCount}]" required class="question-type">
+                        <option value="mcq">Multiple Choice</option>
+                    </select>
+                    <div class="options">
+                        <label>Options:</label>
+                        <input type="text" name="options-${questionCount}[]" required>
+                        <input type="text" name="options-${questionCount}[]" required>
+                        <input type="text" name="options-${questionCount}[]" required>
+                        <input type="text" name="options-${questionCount}[]" required>
+                    </div>
+                    <label for="correct_answers-${questionCount}">Correct Answer Index (0-3):</label>
+                    <input type="number" name="correct_answers[${questionCount}]" min="0" max="3" required />
+                    <label for="marks-${questionCount}">Marks:</label>
+                    <input type="number" name="marks[${questionCount}]" min="1" required />
+                    <label for="comments-${questionCount}">Comment:</label>
+                    <input type="text" name="comments[${questionCount}]" placeholder="Comment" />
+                `;
+          questionsContainer.appendChild(questionField);
+          questionCount++;
+        }
+
+        saveBtn.addEventListener("click", function (event) {
+          event.preventDefault();
+          calculateTotalMarks();
+          saveAssessment();
+        });
+
+        function calculateTotalMarks() {
+          const marksInputs = document.querySelectorAll('input[name^="marks"]');
+          let totalMarks = 0;
+          marksInputs.forEach((input) => {
+            totalMarks += parseInt(input.value);
+          });
+          totalMarksInput.value = totalMarks;
+        }
+
+        function saveAssessment() {
+          const formData = new FormData(
+            document.getElementById("assessment-form")
+          );
+
+          // Log form data before submitting
+          console.log("Form Data:");
+          for (const [key, value] of formData.entries()) {
+            console.log(key, value);
+          }
+
+          fetch("/submit-assessment", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (response.ok) {
+                alert("Assessment submitted successfully");
+                window.location.href = "/formative_assessment";
+              } else {
+                response.json().then((data) => {
+                  console.error("Error:", data);
+                  alert(`Failed to submit assessment: ${data.message}`);
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Failed to submit assessment. Check console for details.");
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>
+                Add MCQ questions
+            </legend>
+            <div class="container-fluid shadow-lg p-3 mb-5 bg-body-tertiary rounded"  >
+                <div class="row">
+                    <div class="col-sm pt-2" >
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.difficulty.label(class="form-control-label") }}
+                                    {{ form.difficulty(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.tag.label(class="form-control-label") }}
+                                    {{ form.tag(class="form-control") }} 
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.assignment_id.label(class="form-control-label") }}
+                                    {{ form.assignment_id(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.points.label(class="form-control-label") }}
+                                    {{ form.points(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.question.label(class="form-control-label") }}
+                                    {{ form.question(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.correct_answer.label(class="form-control-label") }}
+                                    {{ form.correct_answer(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.opt_1.label(class="form-control-label") }}
+                                    {{ form.opt_1(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.opt_2.label(class="form-control-label") }}
+                                    {{ form.opt_2(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.opt_3.label(class="form-control-label") }}
+                                    {{ form.opt_3(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group mb-2">
+                                    {{ form.opt_4.label(class="form-control-label") }}
+                                    {{ form.opt_4(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm pt-3">
+                        <div class="row mb-2">
+                            <div class="col-sm">
+                                <button type="button" class="btn btn-primary" style="width: 200px; height: 150px;">ADD</button>
+                                <button type="button" class="btn btn-warning" style="width: 200px; height: 150px;">SEARCH</button>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm">
+                                <button type="button" class="btn btn-success" style="width: 200px; height: 150px;">SAVE</button>
+                                <button type="button" class="btn btn-danger" style="width: 200px; height: 150px;">DELETE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div class="container-fluid">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr >
+                    <th scope="col">Assy Id</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Difficulty</th>
+                    <th scope="col">Question</th>
+                    <th scope="col">Correct Ans</th>
+                    <th scope="col">Incorrect Ans 1</th>
+                    <th scope="col">Incorrect Ans 2</th>
+                    <th scope="col">Incorrect Ans 3</th>
+                    <th scope="col">Incorrect Ans 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td scope="row">0001</td>
+                    <td>Java Algorithm</td>
+                    <td>Hard</td>
+                    <td>What does OOP stands for?</td>
+                    <td>Object Oriented Programming</td>
+                    <td>Object Oracle Program</td>
+                    <td>Oracle Oriented Program</td>
+                    <td>Occasional Oracle Program</td>
+                    <td>Objective Oracle Programing</td>
+                </tr>
+                <tr>
+                    <td>0002</td>
+                    <td>Java Algorithm</td>
+                    <td>Easy</td>
+                    <td>What does javac command do?</td>
+                    <td>The javac command compiles Java source code files into bytecode</td>
+                    <td>javac is a command-line utility for running Java applications directly from source code.</td>
+                    <td>javac is a debugging tool for identifying and fixing errors in Java bytecode.</td>
+                    <td>javac is a tool for packaging Java applications into JAR (Java Archive) file</td>
+                    <td>javac is used to decompile Java bytecode into source code.</td>
+                </tr>
+            </tbody>
+            <!-- <tfoot>
+            </tfoot> -->
+        </table>
+    </div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Comments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <h1>Question Comments</h1>
+    
+    <!-- Display existing comments -->
+    <h2>Existing Comments</h2>
+    <ul>
+        {% for comment in comments %}
+        <li>{{ comment.content }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Form to add new comment -->
+    <h2>Add New Comment</h2>
+    <form action="{{ url_for('add_comment', question_id=question_id) }}" method="post">
+        <textarea name="content" rows="4" cols="50" placeholder="Enter your comment here"></textarea><br>
+        <input type="submit" value="Submit Comment">
+    </form>
+</body>
+</html>

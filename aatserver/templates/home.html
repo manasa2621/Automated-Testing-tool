@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardiff University</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #00509e;
+      }
+      .header {
+        height: 60px;
+        background-color: #004080;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .sidebar {
+        width: 200px;
+        height: 220px;
+        position: fixed;
+        top: 120px;
+        left: 20px;
+        background-color: #00509e;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 900;
+      }
+      .sidebar a {
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 10px; /* Adjusted margin to provide consistent spacing */
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        background-color: #006bb3;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .sidebar a:hover {
+        background-color: #00509e;
+      }
+      .login-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: rgb(24, 22, 143);
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .login-btn:hover {
+        background-color: #c00;
+      }
+      .main-content {
+        margin-top: 60px;
+        margin-left: 240px; /* Adjusted margin for sidebar width */
+        height: calc(100vh - 60px);
+        background: url("static/assets/landing.jpg") no-repeat center center;
+        background-size: cover;
+        position: relative;
+        padding: 20px;
+      }
+      .content {
+        padding: 20px;
+        display: none;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 600px;
+      }
+      .active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      Cardiff University
+      <a href="/staff-login" class="login-btn">Login</a>
+    </div>
+    <div class="sidebar">
+      <a href="#" id="level1-link">Level 1 Questions</a>
+      <a href="#" id="level2-link">Level 2 Questions</a>
+      <a href="#" id="level3-link">Level 3 Questions</a>
+    </div>
+    <div class="main-content">
+      <div class="content" id="L1">
+        <h2>Level 1 Questions</h2>
+        <div id="L1-assessments"></div>
+      </div>
+      <div class="content" id="L2">
+        <h2>Level 2 Questions</h2>
+        <div id="L2-assessments"></div>
+      </div>
+      <div class="content" id="L3">
+        <h2>Level 3 Questions</h2>
+        <div id="L3-assessments"></div>
+      </div>
+    </div>
+
+    <script>
+      // Define redirectTo function globally
+      function redirectTo(action, id) {
+        switch (action) {
+          case "take_assessment":
+            window.location.href = `/take_assessment/${id}`;
+            break;
+          case "view_staff_comments":
+            window.location.href = `/view_staff_comments/${id}`;
+            break;
+
+          default:
+            console.error(`Invalid action: ${action}`);
+            break;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        function fetchAndShowAssessments(difficultyLevel) {
+          fetch(`/fetch_assessments?difficulty_level=${difficultyLevel}`)
+            .then((response) => response.json())
+            .then((data) => {
+              renderAssessments(data.assessments, difficultyLevel);
+            })
+            .catch((error) =>
+              console.error("Error fetching assessments:", error)
+            );
+        }
+
+        function renderAssessments(assessments, difficultyLevel) {
+          const assessmentsContainer = document.getElementById(
+            `${difficultyLevel}-assessments`
+          );
+
+          if (assessmentsContainer) {
+            assessmentsContainer.innerHTML = "";
+            assessments.forEach((assessment) => {
+              const assessmentItem = document.createElement("div");
+              assessmentItem.classList.add("assessment-item");
+              assessmentItem.innerHTML = `
+              <h3>${assessment.name}</h3>
+              <p>Difficulty Level: ${assessment.difficulty_level}</p>
+              <p>Total Questions: ${assessment.total_questions}</p>
+              <p>Total Marks: ${assessment.total_marks}</p>
+              <div class="btn-group">
+                <button onclick="redirectTo('take_assessment', ${assessment.id})">Take Assessment</button>
+              </div>
+            `;
+              assessmentsContainer.appendChild(assessmentItem);
+            });
+
+            // Show the content div for the selected difficulty level directly by its ID
+            showContent(difficultyLevel);
+          } else {
+            console.error(
+              `Container for level ${difficultyLevel} assessments not found.`
+            );
+          }
+        }
+
+        function showContent(id) {
+          const contents = document.querySelectorAll(".content");
+          contents.forEach((content) => {
+            if (content.id === id) {
+              content.classList.add("active");
+            } else {
+              content.classList.remove("active");
+            }
+          });
+        }
+
+        document
+          .getElementById("level1-link")
+          .addEventListener("click", () => fetchAndShowAssessments("L1"));
+        document
+          .getElementById("level2-link")
+          .addEventListener("click", () => fetchAndShowAssessments("L2"));
+        document
+          .getElementById("level3-link")
+          .addEventListener("click", () => fetchAndShowAssessments("L3"));
+
+        // Fetch initial assessments for the first difficulty level
+      });
+    </script>
+  </body>
+</html>

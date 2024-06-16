@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formative Assessment</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      #assessment-list {
+        margin-top: 20px;
+      }
+
+      .assessment-item {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+      }
+
+      .assessment-item h3 {
+        margin-top: 0;
+      }
+
+      .btn-group {
+        margin-top: 10px;
+      }
+
+      .btn-group button {
+        margin-right: 10px;
+        padding: 5px 10px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+      }
+
+      .btn-group button:hover {
+        background-color: #0056b3;
+      }
+
+      #add-assessment-btn {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+      }
+
+      #add-assessment-btn:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Formative Assessment</h1>
+
+      <!-- Button to navigate to add-assessments.html -->
+      <button id="add-assessment-btn" onclick="navigateToAddAssessment()">
+        Add Assessment
+      </button>
+
+      <button id="add-assessment-btn" onclick="navigateToviewFeedback()">
+        view Feedback
+      </button>
+
+      <!-- Display assessments -->
+      <div id="assessment-list">
+        <!-- Assessment items will be dynamically added here -->
+      </div>
+    </div>
+
+    <!-- JavaScript to fetch assessment data and render UI -->
+    <script>
+      // Function to fetch assessment data from the server
+      function fetchAssessments() {
+        fetch("/fetch_assessments")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              renderAssessments(data.assessments);
+            } else {
+              console.error("Failed to fetch assessments:", data.message);
+            }
+          })
+          .catch((error) =>
+            console.error("Error fetching assessments:", error)
+          );
+      }
+
+      // Function to render assessment data in the UI
+      function renderAssessments(assessments) {
+        const assessmentList = document.getElementById("assessment-list");
+        // Clear existing content
+        assessmentList.innerHTML = "";
+
+        // Render each assessment
+        assessments.forEach((assessment) => {
+          const assessmentItem = document.createElement("div");
+          assessmentItem.classList.add("assessment-item");
+          assessmentItem.innerHTML = `
+                    <h3>${assessment.name}</h3>
+                    <p>Difficulty Level: ${assessment.difficulty_level}</p>
+                    <p>Total Questions: ${assessment.total_questions}</p>
+                    <p>Total Marks: ${assessment.total_marks}</p>
+                    <div class="btn-group">
+                        <button onclick="viewAssessment(${assessment.id})">View</button>
+                        <button onclick="deleteAssessment(${assessment.id})">Delete</button>
+                    </div>
+                `;
+          assessmentList.appendChild(assessmentItem);
+        });
+      }
+
+      // Function to navigate to add-assessments.html
+      function navigateToAddAssessment() {
+        window.location.href = "/staffs-view";
+      }
+
+      function navigateToviewFeedback() {
+        window.location.href = "/viewstudent-feedback";
+      }
+
+      // Function to view assessment detail
+      function viewAssessment(assessmentId) {
+        // Redirect or navigate to the view assessment page with assessmentId
+        window.location.href = "/view_assessment/" + assessmentId;
+      }
+
+      // Function to edit assessment
+      function editAssessment(assessmentId) {
+        // Redirect or navigate to the edit assessment page with assessmentId
+        window.location.href = "/edit_assessment/" + assessmentId;
+      }
+
+      // Function to delete assessment
+      function deleteAssessment(assessmentId) {
+        fetch(`/delete-assessment/${assessmentId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Failed to delete assessment");
+            }
+          })
+          .then((data) => {
+            console.log(data.message); // Log success message
+            location.reload();
+            // Optionally, you can perform additional actions after successful deletion
+          })
+          .catch((error) => {
+            console.error(error); // Log any errors
+            // Optionally, you can handle errors or display an error message to the user
+          });
+      }
+
+      // Fetch assessments when the page loads
+      document.addEventListener("DOMContentLoaded", fetchAssessments);
+    </script>
+  </body>
+</html>

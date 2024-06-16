@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Details</title>
+</head>
+
+<body>
+    <h1>Assessment Details</h1>
+    <div id="assessment-details">
+        <!-- Assessment details will be dynamically added here -->
+    </div>
+    <div id="questions">
+        <!-- Questions will be dynamically added here -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch assessment data from the backend
+            fetch('http://localhost:5000/assessment/1') // Replace '1' with the actual assessment ID
+                .then(response => response.json())
+                .then(data => {
+                    // Display assessment details
+                    const assessmentDetailsDiv = document.getElementById('assessment-details');
+                    assessmentDetailsDiv.innerHTML = `
+                        <h2>Assessment Name: ${data.assessment.name}</h2>
+                        <p>Difficulty Level: ${data.assessment.difficulty}</p>
+                        <p>Total Questions: ${data.assessment.total_questions}</p>
+                    `;
+
+                    // Display questions
+                    const questionsDiv = document.getElementById('questions');
+                    questionsDiv.innerHTML = '<h2>Questions</h2><ul>';
+                    data.questions.forEach(question => {
+                        questionsDiv.innerHTML += `
+                            <li>
+                                <p><strong>Question:</strong> ${question.question_text}</p>
+                                <p><strong>Marks:</strong> ${question.marks}</p>
+                                <p><strong>Type:</strong> ${question.question_type}</p>
+                            </li>
+                        `;
+                    });
+                    questionsDiv.innerHTML += '</ul>';
+                })
+                .catch(error => console.error('Error fetching assessment data:', error));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-top: 20px;
+        }
+
+        .question {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .comments-container {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View Assessment Details</h1>
+        <div id="assessment-details" data-assessment-id="{{ assessment_id }}"></div>
+    </div>
+
+    <script>
+        async function fetchAssessmentData(assessmentId) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/fetch_assessment_data/${assessmentId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch assessment data");
+                }
+                const data = await response.json();
+                return JSON.parse(data.assessment_data);
+            } catch (error) {
+                console.error("Error fetching assessment data:", error);
+                return null;
+            }
+        }
+
+        async function renderAssessmentDetails() {
+            const assessmentDetails = document.getElementById("assessment-details");
+            const assessmentId = assessmentDetails.getAttribute("data-assessment-id");
+
+            assessmentDetails.innerHTML = "";
+
+            const assessmentData = await fetchAssessmentData(assessmentId);
+            if (!assessmentData) {
+                console.error("No assessment data found");
+                return;
+            }
+
+            const assessmentName = assessmentData[assessmentId].assessment_name;
+            const questions = assessmentData[assessmentId].questions;
+
+            // Render assessment name
+            const assessmentNameHtml = `<h2>Assessment Name: ${assessmentName}</h2>`;
+            assessmentDetails.innerHTML += assessmentNameHtml;
+
+            // Render each question with the first comment (if available)
+            for (const questionId in questions) {
+                if (questions.hasOwnProperty(questionId)) {
+                    const question = questions[questionId];
+                    const questionText = question.question_text;
+                    const comments = question.comments;
+
+                    // Render question text
+                    const questionHtml = `<div class="question">
+                        <p><strong>Question:</strong> ${questionText}</p>
+                    </div>`;
+                    assessmentDetails.innerHTML += questionHtml;
+
+                    // Render the first comment for the question (if available)
+                    if (comments.length > 0) {
+                        const firstComment = comments[0]; // Get the first comment
+                        const commentHtml = `<div class="comments-container">
+                            <p><strong>Comment:</strong> ${firstComment.comment_content}</p>
+                        </div>`;
+                        assessmentDetails.innerHTML += commentHtml;
+                    } else {
+                        assessmentDetails.innerHTML += `<div class="comments-container"><p>No comments available</p></div>`;
+                    }
+                }
+            }
+        }
+
+        // Call the render function when the DOM content is loaded
+        document.addEventListener("DOMContentLoaded", renderAssessmentDetails);
+    </script>
+</body>
+</html>

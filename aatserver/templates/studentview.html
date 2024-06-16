@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1 class="container-fluid pt-2" style="text-align: center;">
+       This is student view
+    </h1>
+    <a href="{{url_for('view_assessments')}}"
+    ><img
+      src="static/assets/formative_assessment.png"
+      class="btTxt submit"
+      style="display: block"
+      alt="formative_assessments_logo"
+  /></a>
+</div>
+{% endblock content %}
