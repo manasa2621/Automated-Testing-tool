@@ -1,37 +1,52 @@
-# Team10_CMT313_Assessment3
-## Notes to Team
-- Once cloned ensure you are running in virtual environment. 
-- Ensure that you use python(3) run.py to host it on local server (5000 port)
-- When you commit to gitlab use your initials then type your message for commit. For example: git commit -m "VP - Created the flask server."
+# Automated Testing Tool
 
-## Project Plan 
-- Team opted to use flask server, package structure, routes and temnplating method to incorporate everyone features work. 
+## Overview
+The Automated Testing Tool is a web application designed to facilitate the creation and administration of assessments. Staff members can upload questions as images, specify options, set correct answers, and assign marks. Students can select their level, take assessments, view their scores, and provide feedback. Staff can review the feedback provided by students.
 
-- Every individual is responsible for their feature and incorporating their working using Jinja2 and templating to the flask sever. 
+## Features
 
-- Team has agreed common font and colour theme to ensure the overall web application follows a unison practice. This will prove to show independent working as well as effective team working. 
+### For Staff
+- **Login:** Secure login for staff members to access the system.
+- **Upload Questions:** Staff can upload questions in image format.
+- **Specify Options:** Define multiple-choice options for each question.
+- **Set Correct Answers:** Indicate the correct answer for each question.
+- **Assign Marks:** Allocate marks for each question.
+- **View Feedback:** Review feedback submitted by students after assessments.
 
-- Team has agreed to use Bootstrap.
+### For Students
+- **Select Level:** Choose the difficulty level or category of the assessment.
+- **Take Assessment:** Answer the questions presented during the assessment.
+- **View Score:** Get immediate feedback on performance with a detailed score report.
+- **Provide Feedback:** Submit feedback on the assessment, which is visible to staff.
 
-## CONTRIBUTION LOG:
-### Vikram Ponnuswamy - 23106080
-- Created the project plan section and contribution log section on the README.MD to track everyone's contribution towards the prototype. 
+## Usage
 
-- Created the flask server for the prototype work for everyone to work add their template. 
+### Staff Workflow
+1. **Login:** Staff members log into the system using their credentials.
+2. **Upload Question:** Navigate to the 'Upload Question' section.
+   - Upload an image of the question.
+   - Specify the answer options.
+   - Set the correct answer.
+   - Assign marks to the question.
+   - Save the question to the database.
+3. **View Feedback:** Access the 'Feedback' section to see feedback from students regarding assessments.
 
-- Created Gitlab clone guide.pdf for the group to follow.
------
-### Anukarthika Rajasekhar - XXXXXXXX
------
-### Warsa Aliya Khizer - XXXXXXXX
------
-### Pun Ching Desiree Yan - 23074472
-- Created a figma document with the agreed color scheme, typogrpahy, and sample icons and button for the group to follow to keep the overall aesthetics constant. 
+### Student Workflow
+1. **Select Level:** Choose the desired level or category for the assessment.
+2. **Take Assessment:** Start the assessment and answer the questions.
+3. **View Score:** Submit the assessment to receive a score report.
+4. **Provide Feedback:** After viewing the score, submit feedback about the assessment experience.
 
------
-### Hanyang Yu - XXXXXXXX
------
-### Yunhan Liu - 23025395
------
-### Mahershi Gupta - XXXXXXXX
------
+## Feedback System
+- **Student Feedback:** After completing an assessment, students can provide feedback on the questions and overall experience.
+- **Staff Review:** Staff members can view the feedback to improve future assessments and address any issues raised by students.
+
+## Technologies Used
+- **Flask:** Backend framework to handle web requests and responses.
+- **SQLite:** Database to store user data, questions, options, answers, scores, and feedback.
+- **HTML/CSS:** Frontend technologies for creating user interfaces.
+- **JavaScript:** To add interactivity to the web pages.
+- **Bootstrap:** CSS framework to design responsive and visually appealing web pages.
+
+## Contact
+For any questions or inquiries, please contact manasa.m2621@gmail.com
